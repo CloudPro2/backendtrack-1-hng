@@ -10,15 +10,14 @@ def classify_number():
     number = request.args.get('number')
 
     if not number:
-        return jsonify( {"number": "alphabet", "error": True} ), 400
+        return jsonify({"number": "", "error": True}), 400
     try:
         number = int(number)
     except ValueError:
-        return jsonify({"number": "alphabet", "error": True}), 400
+        return jsonify({"number": number, "error": True}), 400
 
-    number = int(number)
     properties = get_properties(number)
-    digit_sum = sum(int(digit) for digit in str(number))
+    digit_sum = sum(int(digit) for digit in str(abs(number)))  # Use abs() to handle negative numbers
     fun_fact = get_fun_fact(number)
 
     response = {
@@ -55,10 +54,12 @@ def get_properties(num):
     return properties
 
 def is_armstrong(num):
-    digits = [int(digit) for digit in str(num)]
-    return sum(digit**len(digits) for digit in digits) == num
+    digits = [int(digit) for digit in str(abs(num))]  # Use abs() to handle negative numbers
+    return sum(digit**len(digits) for digit in digits) == abs(num)  # Compare to abs(num)
 
 def get_fun_fact(num):
+    if num < 0:
+        return "Negative numbers are interesting too, but we don't have a specific fun fact for them."
     response = requests.get(f"http://numbersapi.com/{num}/math")
     return response.text if response.status_code == 200 else "No fun fact available"
 
