@@ -63,5 +63,7 @@ def get_fun_fact(num):
     response = requests.get(f"http://numbersapi.com/{num}/math")
     return response.text if response.status_code == 200 else "No fun fact available"
 
+from waitress import serve
+
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5173)  # Ensure the app listens on port 5173
+    serve(app, host="0.0.0.0", port=5173)
